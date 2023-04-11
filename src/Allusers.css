@@ -1,0 +1,55 @@
+.header {
+    background-color: bisque;
+    margin-inline-start: 0em;
+    margin-inline-end: 0em;
+    display: flex;
+    justify-content: flex-end;
+    justify-content: space-between;
+    padding: 20px;
+    text-align: center;
+    position: fixed;
+    top: 0px;
+    width: 100%;
+}
+
+.Para {
+    font-size: larger;
+    font-family: sans-serif;
+    font-weight: 400;
+    display: flex;
+}
+
+.Para p {
+    padding: 0px 36px;
+}
+
+.Para p a {
+    text-decoration: none;
+}
+
+.headimg {
+    width: 71px;
+}
+
+.headimg img {
+    width: 100%
+}
+
+.hero-section {
+    background-image: url("./assets/IMAGES/BACKGROUND.png");
+    height: 100vh;
+}
+
+.Footer {
+    margin-inline-start: 0em;
+    margin-inline-end: 0em;
+    display: flex;
+    padding: 20px;
+    bottom: 0px;
+    width: 100%;
+}
+
+.fpara {
+    margin: auto;
+    text-align: center;
+}
