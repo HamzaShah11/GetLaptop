@@ -10,10 +10,10 @@ import { storage } from "./firebase";
 import { toast } from "react-toastify";
 import "./Allusers.css"
 
+
 const AllUsers = () => {
     const [UserId, setUserid] = useState("")
     const [purchas, setpurchas] = useState("")
-
     const [Email, setuser] = useState("")
     const [image, setImage] = useState("")
     const [imageurl, setImageURL] = useState("")
@@ -44,7 +44,7 @@ const AllUsers = () => {
     function setpics(imagelinkk) {
 
         updateProfile(auth.currentUser, {
-            displayName: "Updated", photoURL: imagelinkk
+            displayName: name, photoURL: imagelinkk
 
         }).then((res) => {
 
@@ -67,12 +67,6 @@ const AllUsers = () => {
                 setUserid(user.uid)
                 setuser(user.email)
                 setImageURL(user.photoURL)
-
-                let Email = email;
-                let atIndex = Email.indexOf("@");
-                let username = Email.substring(0, atIndex);
-
-                setName(username)
                 console.log(imageurl);
                 console.log("Alldata", Alldata);
             } else {
@@ -107,10 +101,12 @@ const AllUsers = () => {
 
     const setUser = async () => {
         setCuser(auth.currentUser.email)
+        setName(auth.currentUser.displayName)
     }
     useEffect(() => {
         setUser()
     })
+
     const GetbuyLaptop = async () => {
         try {
             console.log("GetCurrentUser", GetCurrentUser);
@@ -157,13 +153,14 @@ const AllUsers = () => {
         });
     }
 
-    async function buy(id, name, quantity, ProductImage) {
+    async function buy(id, quantityy, ProductImage, specss) {
         let data = {}
-        let qet = quantity - 1
+        console.log("quantity", quantityy);
+        let qet = quantityy - 1
         if (qet >= 0) {
             await setDoc(doc(db, "purchasedLaptops", auth.currentUser.email), {
 
-                [id]: { quantitys: increment(1), Image: ProductImage, date: Date.now() }
+                [id]: { quantitys: increment(1), Image: ProductImage, spec: specss }
             }, { merge: true }).then(() => {
                 toast("laptop: " + ": " + id + "purchased")
                 GetbuyLaptop()
@@ -191,46 +188,40 @@ const AllUsers = () => {
             <div className="header">
                 <div className="headimg" ><img src="https://img.freepik.com/free-vector/creative-flat-laptop-logo-template_23-2149010230.jpg?w=2000" alt="Cinque Terre"></img></div>
                 <div className="Para">
-                    <p><a href="./Contact">Contact</a></p>
-                    <p><a href="/css/default.asp">Search</a></p>
+                    <p><a href="./SellLaptops">Become a Seller</a></p>
+                    <p><a href="./Profile">Update Proifle</a></p>
+                </div>
+            </div>
+            <div>
+                <button onClick={abc}>Sign Out</button>
+            </div>
+            <div className="maindiv" style={{ margin: "auto", textAlign: "center", marginTop: "1px" }}>
+                <h2>Welcome! {name}
+                </h2>
+
+                <div className="laptopsss">
+                    <h1>New items</h1>
 
                 </div>
-
-            </div>
-            <div className="maindiv" style={{ margin: "auto", textAlign: "center", marginTop: "120px" }}>
-                <h2>Welcome! {name}</h2>
-                <div className="myimage">
-                    {
-                        imageurl == null ?
-                            <div className="Noimage">
-                                <label>
-                                    <img src="https://t3.ftcdn.net/jpg/02/18/21/86/360_F_218218632_jF6XAkcrlBjv1mAg9Ow0UBMLBaJrhygH.jpg" alt="Image description"></img>
-                                    <input style={{ display: "none" }} type="file" onChange={imageChange} accept="image/*" />
-
-                                </label>
-                            </div> : <img src={imageurl} alt="My Image" placeholder="" />
+                <div className="cardWraper">
+                    {Alldata.length > 0 ?
+                        Alldata.map((item, index) => (
+                            <div className="card">
+                                <img className="img-fluid" src={item.data.laptopImage} alt="" />
+                                <div>
+                                    <p><span>Model: </span>{item.id}</p>
+                                    <p><span>Left in store: </span>{item.data.LaptopQuantity}</p>
+                                    <p><span>Name: </span>{item.data.LaptopName}</p>
+                                    <p><span>Specs: </span>{item.data.LaptopSpecs}</p>
+                                    <p><span>Price: </span>{item.data.LaptopPrice}</p>
+                                    <button onClick={() => buy(item.id, item.data.LaptopQuantity, item.data.laptopImage, item.data.LaptopSpecs,)}>Buy Laptop</button>
+                                </div>
+                            </div>
+                        )) : <></>
                     }
 
                 </div>
-                <div>
-                    <input type="file" onChange={imageChange} accept="image/*" />
-                    <button onClick={uploadImage}>Upload profile</button>
-                </div>
-                <div className="currentuser">
-                    <div>
-                        <h3>User id</h3>
-                        {UserId}
-                    </div>
-                    <div>
-                        <h3>User Email</h3>
-                        {Email}
-
-                    </div>
-                </div>
-                <div>
-                    <button onClick={abc}>Sign Out</button>
-                </div>
-                <div className="TableData">
+                {/* <div className="TableData">
                     <div>
                         <h1>All Laptops</h1>
                         <table >
@@ -239,6 +230,7 @@ const AllUsers = () => {
                                     <th>No.</th>
                                     <th> Model</th>
                                     <th> Name</th>
+                                    <th> Specs</th>
                                     <th> Price</th>
                                     <th> Image</th>
                                     <th> left in store</th>
@@ -252,6 +244,7 @@ const AllUsers = () => {
                                             <td>{index}</td>
                                             <td>{item.id}</td>
                                             <td>{item.data.LaptopName}</td>
+                                            <td>{item.data.LaptopSpecs}</td>
                                             <td>{item.data.LaptopPrice}</td>
                                             <div className="mylaptopimage">
                                                 {
@@ -267,7 +260,7 @@ const AllUsers = () => {
 
                                             </div>
                                             <td>{item.data.LaptopQuantity}</td>
-                                            <td><button onClick={() => buy(item.id, item.data.LaptopName, item.data.LaptopQuantity, item.data.laptopImage)}>Buy Laptop</button></td>
+                                            <td><button onClick={() => buy(item.id, item.data.LaptopQuantity, item.data.laptopImage, item.data.LaptopSpecs,)}>Buy Laptop</button></td>
                                         </tr>
                                     ))
                                     : <></>
@@ -276,9 +269,9 @@ const AllUsers = () => {
                             </tbody>
                         </table>
                     </div>
-                </div>
+                </div> */}
             </div>
-            <div className="TableData">
+            {/* <div className="TableData">
                 <div>
                     <h1>Purchased Laptops</h1>
                     <table >
@@ -286,6 +279,7 @@ const AllUsers = () => {
                             <tr>
 
                                 <th>laptop id</th>
+                                <th>Specs</th>
                                 <th>Quantity</th>
                                 <th>Image</th>
                             </tr>
@@ -298,6 +292,7 @@ const AllUsers = () => {
                                         <tr>
 
                                             <td>{key}</td>
+                                            <td>{value.spec}</td>
                                             <td>{value.quantitys}</td>
                                             <td><img src={value.Image} alt="" /></td>
 
@@ -309,6 +304,28 @@ const AllUsers = () => {
                             </tbody>}
                     </table>
                 </div>
+            </div> */}
+            <div className="laptopsss">
+                <h1>Purchased laptops</h1>
+
+            </div>
+            <div className='cardWraper'>
+                {purchasedLaptops ?
+                    Object.entries(purchasedLaptops).map(([key, value]) => (
+                        <div className='card ' >
+
+                            <img className='img-fluid' src={value.Image} alt="img" />
+                            <div>
+                                <p> <span> Model: </span> {"   " + key}</p>
+                                <p><span>Spec: </span>{"   " + value.spec}</p>
+                                <p><span>quantity: </span>{"   " + value.quantitys}</p>
+
+                            </div>
+                        </div>
+                    ))
+                    : <></>
+                }
+
             </div>
             <div className="Footer">
                 <div className="fpara">
@@ -316,8 +333,6 @@ const AllUsers = () => {
                 </div>
 
             </div>
-
-
         </>
 
     );

@@ -21,7 +21,7 @@ const Login = () => {
       const q = query(collection(db, "users"), where("isAdmin", "==", true));
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
-        // console.log(doc.id, " => ", doc.data());
+
         if (doc.data().Useremail == email) {
           navigate("/Admin")
         }
@@ -46,7 +46,6 @@ const Login = () => {
     if (auth.currentUser != null) {
       navigate("/AllUsers")
     }
-
   });
   return (
     <div style={{ margin: "auto", textAlign: "center" }}>

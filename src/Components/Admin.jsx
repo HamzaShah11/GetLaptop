@@ -12,30 +12,30 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 const Admin = () => {
     const auth = getAuth()
     const Navigate = useNavigate();
-
     const [name, setName] = useState("");
+    const [specs, setSpecs] = useState("");
     const [price, setPrice] = useState("");
     const [image, setImage] = useState("")
     const [quantity, setQuantity] = useState("");
     const [isAdmin, setIsAdmin] = useState(false);
     const [GetLaptopData, setLaptopData] = useState([]);
     const [myobj, setmyobj] = useState({});
-    const [item, setCurrentItem] = useState("");
     const [UpdateName, setUpdateLaptopName] = useState("");
+    const [Updatespecs, setUpdateLaptopSpecs] = useState("");
     const [UpdatePrice, setUpdateLaptopPrice] = useState("");
     const [UpdateQuantity, setUpdateLaptopQuantity] = useState("");
-    const [UpdateImage, setUpdateLaptopImage] = useState("");
-    const [show, setShow] = useState(false);
-    const [ForRerender, setForRerender] = useState(false)
 
+    const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
+
     const handleShow = (id, item) => {
         setmyobj({ id })
-        setCurrentItem(item.data)
+        // setCurrentItem(item.data)
         setUpdateLaptopName(item.data.LaptopName)
+        setUpdateLaptopSpecs(item.data.LaptopSpecs)
         setUpdateLaptopPrice(item.data.LaptopPrice)
         setUpdateLaptopQuantity(item.data.LaptopQuantity)
-        setUpdateLaptopImage(item.data.LaptopImage)
+        setImage(item.data.laptopImage)
         setShow(true)
 
     };
@@ -101,6 +101,7 @@ const Admin = () => {
                 } else {
                     const docRef = await addDoc(collection(db, "laptop"), {
                         LaptopName: name,
+                        LaptopSpecs: specs,
                         LaptopPrice: Number(price),
                         LaptopQuantity: Number(quantity),
                         laptopImage: image,
@@ -124,9 +125,10 @@ const Admin = () => {
                 toast("value should be greater then 0")
             } else {
                 const docRef = doc(db, "laptop", myobj.id);
-
+                console.log("image", image);
                 await updateDoc(docRef, {
                     LaptopName: UpdateName,
+                    LaptopSpecs: Updatespecs,
                     LaptopPrice: Number(UpdatePrice),
                     LaptopQuantity: Number(UpdateQuantity),
                     laptopImage: image
@@ -173,7 +175,8 @@ const Admin = () => {
         console.log("All Laptop Data", GetLaptopData);
     }, [GetLaptopData])
 
-    function abc() {
+    function signout() {
+        console.log("signout function called");
         signOut(auth).then(() => {
             Navigate("/")
         }).catch((error) => {
@@ -188,6 +191,23 @@ const Admin = () => {
     } else {
         return (
             <>
+                <div className="header">
+                    <div className="headimg" ><img src="https://img.freepik.com/free-vector/creative-flat-laptop-logo-template_23-2149010230.jpg?w=2000" alt="Cinque Terre"></img></div>
+                    <div className="adminpanel">
+                        <h>Admin Panel</h>
+                    </div>
+                    <div className="Para">
+                        <p><a href="./Contact">Contact</a></p>
+                        <p><a href="/css/default.asp">Search</a></p>
+                    </div>
+
+
+                </div>
+                <div className="AdminHeader">
+
+                    <button onClick={signout}>Sign Out</button>
+
+                </div>
 
                 <Modal show={show} onHide={handleClose}>
                     <Modal.Header closeButton>
@@ -198,6 +218,8 @@ const Admin = () => {
 
                             <label>Name</label>
                             <input type="text" value={UpdateName} onChange={(e) => setUpdateLaptopName(e.target.value)} />
+                            <label>Specs</label>
+                            <input type="text" value={Updatespecs} onChange={(e) => setUpdateLaptopSpecs(e.target.value)} />
                             <lable>price</lable>
                             <input type="number" value={UpdatePrice} onChange={(e) => setUpdateLaptopPrice(e.target.value)} />
                             <lable>Quantity</lable>
@@ -207,6 +229,7 @@ const Admin = () => {
                                 <input className="MyinputFile" type="file" onChange={imageChange} accept="image/*" /></label>
                         </div>
                     </Modal.Body>
+
                     <Modal.Footer>
                         <button variant="secondary" onClick={handleClose}>
                             Close
@@ -217,30 +240,22 @@ const Admin = () => {
                     </Modal.Footer>
                 </Modal>
 
-                <div className="AdminHeader">
-                    <p>Admin page</p>
-                    <button onClick={abc}>Sign Out</button>
 
-                </div>
 
                 <div className="AddItems">
                     <div>
-
                         <lable>laptop_name</lable>
                         <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+                        <lable>laptop_Specs</lable>
+                        <input type="text" value={specs} onChange={(e) => setSpecs(e.target.value)} />
                         <lable>laptop_price</lable>
                         <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} />
                         <lable>Quantity</lable>
                         <input type="number" value={quantity} onChange={(e) => setQuantity(e.target.value)} />
-
                         <label >Add Image <img className="MyinputFile1" src={images} alt="upload image" />
                             <input className="MyinputFile" type="file" onChange={imageChange} accept="image/*" /></label>
-
                     </div>
-
                     <div>
-
-
                         <button onClick={Addlaptops}>Add Product</button>
                     </div>
 
@@ -255,6 +270,7 @@ const Admin = () => {
                                     <th>No.</th>
                                     <th>ID</th>
                                     <th>Name</th>
+                                    <th>Specs</th>
                                     <th>Price</th>
                                     <th>Quantity</th>
                                     <th>Image</th>
@@ -267,12 +283,13 @@ const Admin = () => {
                                             <td>{index}</td>
                                             <td>{item.id}</td>
                                             <td>{item.data.LaptopName}</td>
+                                            <td>{item.data.LaptopSpecs}</td>
                                             <td>{item.data.LaptopPrice}</td>
                                             <td>{item.data.LaptopQuantity}</td>
-                                            <div className="myimage">
+                                            <td className="pimage">
                                                 {
                                                     item.data.laptopImage == null ?
-                                                        <div className="Noimage">
+                                                        <div className="pNoimage">
                                                             <label>
                                                                 <img src="https://t3.ftcdn.net/jpg/02/18/21/86/360_F_218218632_jF6XAkcrlBjv1mAg9Ow0UBMLBaJrhygH.jpg" alt="Image description"></img>
                                                                 <input style={{ display: "none" }} type="file" onChange={imageChange} accept="image/*" />
@@ -280,8 +297,7 @@ const Admin = () => {
                                                             </label>
                                                         </div> : <img src={item.data.laptopImage} alt="My Image" placeholder="" />
                                                 }
-
-                                            </div>
+                                            </td>
                                             <td>
                                                 <button onClick={() => {
                                                     handleShow(item.id, item)
@@ -301,8 +317,6 @@ const Admin = () => {
 
                     </div>
                 </div>
-
-
 
 
             </>

@@ -1,0 +1,44 @@
+.fun {
+    margin-top: 96px;
+}
+
+button {
+    margin-top: 90px;
+}
+
+.card {
+    border: 2px solid;
+    margin-top: 100px;
+    background-color: beige;
+    display: flex;
+    justify-content: space-between;
+    width: 17rem;
+}
+
+.card p span {
+    font-weight: bolder;
+
+}
+
+.card img {
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+}
+
+.card button {
+    width: 100%;
+    margin: 0;
+
+}
+
+.cardWraper {
+    display: flex;
+    gap: 40px;
+    padding-left: 100px;
+    padding-right: 100px;
+}
+
+img.img-fluid {
+    border: 2px solid;
+}
