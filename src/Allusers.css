@@ -96,3 +96,8 @@ h1 {
     display: flex;
     justify-content: space-between;
 }
+
+.email {
+    margin: auto;
+    text-align: center;
+}

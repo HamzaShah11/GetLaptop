@@ -9,6 +9,7 @@ import { getDownloadURL, getStorage, ref, uploadBytes, uploadBytesResumable } fr
 import { storage } from "./firebase";
 import { toast } from "react-toastify";
 import "./Allusers.css"
+import emailjs from 'emailjs-com';
 import Modal from 'react-bootstrap/Modal';
 
 const Profile = () => {
@@ -198,6 +199,35 @@ const Profile = () => {
 
 
 
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const { user_name, user_email, message } = e.target.elements;
+
+        emailjs
+            .send(
+                "service_4x330nt",
+                "template_r0ui2su",
+                {
+                    to_name: user_name.value,
+                    subject: "subj",
+                    to_email: user_email.value,
+                    from_email: auth.currentUser.email,
+                    reply_to: "ptower392@gmail.com",
+                    from_name: auth.currentUser.displayName,
+                    message: message.value,
+                },
+                "ucMmq6Eh5PDiGQy_4"
+            )
+            .then(
+                (result) => {
+                    console.log(result);
+                },
+                (error) => {
+                    console.log(error);
+                }
+            );
+    };
+
 
     return (
         <>
@@ -282,8 +312,19 @@ const Profile = () => {
                     </button>
                 </Modal.Footer>
             </Modal>
-
-
+            <br />
+            <div className="email">
+                <form className="emailbody" onSubmit={handleSubmit}>
+                    <input type="hidden" name="contact_number" />
+                    <label>Reciever Name</label>
+                    <input type="text" name="user_name" />
+                    <label> Reciever Email</label>
+                    <input type="email" name="user_email" />
+                    <label>Message</label>
+                    <textarea name="message" />
+                    <input type="submit" value="Send" />
+                </form>
+            </div>
 
             <div className="Footer">
                 <div className="fpara">

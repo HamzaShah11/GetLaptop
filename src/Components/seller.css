@@ -33,7 +33,10 @@ button {
 }
 
 .cardWraper {
+    /* margin: 0pc auto; */
+    justify-content: center;
     display: flex;
+    flex-wrap: wrap;
     gap: 40px;
     padding-left: 100px;
     padding-right: 100px;
@@ -41,4 +44,9 @@ button {
 
 img.img-fluid {
     border: 2px solid;
+}
+
+.purchased-items {
+    /* margin: auto; */
+    text-align: center;
 }

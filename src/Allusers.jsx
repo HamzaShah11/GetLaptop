@@ -13,6 +13,7 @@ import "./Allusers.css"
 
 const AllUsers = () => {
     const [UserId, setUserid] = useState("")
+    const [qunt, setquantityy] = useState("")
     const [purchas, setpurchas] = useState("")
     const [Email, setuser] = useState("")
     const [image, setImage] = useState("")
@@ -153,17 +154,23 @@ const AllUsers = () => {
         });
     }
 
-    async function buy(id, quantityy, ProductImage, specss) {
+    async function buy(id, quantityy, ProductImage, specss, price) {
         let data = {}
-        console.log("quantity", quantityy);
+        console.log(price);
+        console.log("quantity", qunt);
         let qet = quantityy - 1
+
         if (qet >= 0) {
+
             await setDoc(doc(db, "purchasedLaptops", auth.currentUser.email), {
 
-                [id]: { quantitys: increment(1), Image: ProductImage, spec: specss }
+                [id]: {
+                    quantitys: increment(1), Image: ProductImage, spec: specss, cost: price * qunt + 1
+                }
             }, { merge: true }).then(() => {
                 toast("laptop: " + ": " + id + "purchased")
                 GetbuyLaptop()
+
             });
             updateLaptops(id, qet)
         } else {
@@ -181,6 +188,16 @@ const AllUsers = () => {
             console.log(er);
         }
     }
+
+    useEffect(() => {
+        if (purchasedLaptops) {
+            Object.entries(purchasedLaptops).map(([key, value]) => {
+                setquantityy(value.quantitys)
+            })
+        }
+
+
+    }, [purchasedLaptops])
 
 
     return (
@@ -214,7 +231,7 @@ const AllUsers = () => {
                                     <p><span>Name: </span>{item.data.LaptopName}</p>
                                     <p><span>Specs: </span>{item.data.LaptopSpecs}</p>
                                     <p><span>Price: </span>{item.data.LaptopPrice}</p>
-                                    <button onClick={() => buy(item.id, item.data.LaptopQuantity, item.data.laptopImage, item.data.LaptopSpecs,)}>Buy Laptop</button>
+                                    <button onClick={() => buy(item.id, item.data.LaptopQuantity, item.data.laptopImage, item.data.LaptopSpecs, item.data.LaptopPrice)}>Buy Laptop</button>
                                 </div>
                             </div>
                         )) : <></>
@@ -312,7 +329,8 @@ const AllUsers = () => {
             <div className='cardWraper'>
                 {purchasedLaptops ?
                     Object.entries(purchasedLaptops).map(([key, value]) => (
-                        <div className='card ' >
+
+                        <div className='card purchased-items ' >
 
                             <img className='img-fluid' src={value.Image} alt="img" />
                             <div>
